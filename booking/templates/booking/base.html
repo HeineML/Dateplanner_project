@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Date-planlegger{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#fdf6f1;
+    --blush:#f3d9e0;
+    --rose:#c9748c;
+    --deep-rose:#a4506a;
+    --plum:#4a2c3d;
+    --gold:#c9a15a;
+    --paper:#fffaf6;
+    --green:#7a9b76;
+    --red:#c96a6a;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html,body{ min-height:100%; }
+  body{
+    background: radial-gradient(circle at 20% 20%, #fbe9ee 0%, var(--cream) 55%, #f6e4d8 100%);
+    font-family:'Cormorant Garamond', serif;
+    color:var(--plum);
+    padding:32px 16px;
+    display:flex;
+    justify-content:center;
+  }
+  .wrap{ width:100%; max-width:560px; }
+  .card{
+    background:var(--paper);
+    border-radius:20px;
+    padding:36px 28px;
+    box-shadow:0 20px 60px rgba(164,80,106,0.18), 0 2px 8px rgba(164,80,106,0.10);
+    border:1px solid rgba(201,161,90,0.25);
+    margin-bottom:20px;
+  }
+  h1{
+    font-family:'Playfair Display', serif;
+    font-style:italic;
+    font-weight:600;
+    font-size:30px;
+    color:var(--deep-rose);
+    margin-bottom:6px;
+  }
+  h2{
+    font-family:'Playfair Display', serif;
+    font-weight:600;
+    font-size:20px;
+    color:var(--deep-rose);
+    margin-bottom:14px;
+  }
+  p.lead{ font-size:18px; margin-bottom:18px; }
+  .topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+    font-size:15px;
+    color:var(--rose);
+  }
+  .topbar a{ color:var(--rose); text-decoration:none; border-bottom:1px solid var(--blush); }
+  input[type=text], input[type=date], input[type=password], textarea{
+    font-family:'Cormorant Garamond', serif;
+    font-size:17px;
+    color:var(--plum);
+    background:var(--cream);
+    border:1.5px solid var(--blush);
+    border-radius:12px;
+    padding:12px 14px;
+    width:100%;
+    outline:none;
+    -webkit-appearance:none;
+    appearance:none;
+    margin-bottom:14px;
+  }
+  input:focus, textarea:focus{ border-color:var(--rose); background:var(--blush); }
+  label{ font-size:14px; color:var(--rose); display:block; margin-bottom:4px; }
+  button, .btn{
+    font-family:'Cormorant Garamond', serif;
+    font-size:17px;
+    font-weight:600;
+    background:var(--deep-rose);
+    color:var(--paper);
+    border:none;
+    border-radius:999px;
+    padding:12px 26px;
+    cursor:pointer;
+    box-shadow:0 8px 18px rgba(164,80,106,0.3);
+  }
+  button:hover, .btn:hover{ opacity:0.92; }
+  button.secondary{ background:transparent; color:var(--rose); border:1.5px solid var(--blush); box-shadow:none; }
+  button.decline{ background:var(--red); }
+  .messages{ list-style:none; margin-bottom:18px; }
+  .messages li{
+    padding:10px 14px;
+    border-radius:10px;
+    margin-bottom:8px;
+    font-size:15px;
+  }
+  .messages .success{ background:#e4f0e2; color:var(--green); }
+  .messages .error{ background:#f7e2e2; color:var(--red); }
+  .item{
+    border-bottom:1px solid var(--blush);
+    padding:12px 0;
+  }
+  .item:last-child{ border-bottom:none; }
+  .badge{
+    display:inline-block;
+    font-size:12px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    padding:3px 10px;
+    border-radius:999px;
+    margin-left:6px;
+  }
+  .badge.pending{ background:#f3e9d0; color:#96772d; }
+  .badge.confirmed{ background:#e4f0e2; color:var(--green); }
+  .badge.declined{ background:#f7e2e2; color:var(--red); }
+  .empty{ color:var(--rose); font-style:italic; font-size:15px; }
+  form.inline{ display:flex; gap:8px; align-items:flex-end; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <span>Innlogget som {{ user.username|default:"gjest" }}</span>
+    {% if user.is_authenticated %}<a href="{% url 'logout' %}">Logg ut</a>{% endif %}
+  </div>
+
+  {% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+      <li class="{{ message.tags }}">{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {% block content %}{% endblock %}
+</div>
+</body>
+</html>

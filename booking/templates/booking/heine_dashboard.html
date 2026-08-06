@@ -1,0 +1,62 @@
+{% extends "booking/base.html" %}
+{% block title %}Date-forespørsler{% endblock %}
+{% block content %}
+
+<div class="card">
+  <h1>Hei Heine 👋</h1>
+  <p class="lead">Her er statusen på date-forespørslene dine</p>
+</div>
+
+<div class="card">
+  <h2>Ventende forespørsler</h2>
+  {% if pending %}
+    {% for r in pending %}
+      <div class="item">
+        <strong>{{ r.date }}</strong>{% if r.activity %} · {{ r.activity }}{% endif %}
+        {% if r.message %}<div style="font-size:14px; color:var(--rose); margin:4px 0;">"{{ r.message }}"</div>{% endif %}
+        <form method="post" style="display:flex; gap:8px; margin-top:8px;">
+          {% csrf_token %}
+          <input type="hidden" name="respond" value="1">
+          <input type="hidden" name="request_id" value="{{ r.id }}">
+          <button type="submit" name="action" value="confirm">Bekreft 💕</button>
+          <button type="submit" name="action" value="decline" class="decline">Avslå</button>
+        </form>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="empty">Ingen ventende forespørsler.</p>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h2>Bekreftede dates</h2>
+  {% if confirmed %}
+    {% for r in confirmed %}
+      <div class="item">{{ r.date }}{% if r.activity %} · {{ r.activity }}{% endif %} <span class="badge confirmed">Bekreftet</span></div>
+    {% endfor %}
+  {% else %}
+    <p class="empty">Ingen bekreftede dates ennå.</p>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h2>Legg til utilgjengelig dato</h2>
+  <form method="post" class="inline">
+    {% csrf_token %}
+    <div style="flex:1;">
+      <label for="id_udate">Dato</label>
+      <input type="date" name="date" id="id_udate" min="{{ today }}" required>
+    </div>
+    <button type="submit" name="add_unavailable" value="1">Legg til</button>
+  </form>
+
+  {% if unavailable_dates %}
+    <div style="margin-top:14px;">
+      {% for u in unavailable_dates %}
+        <div class="item">{{ u.date }}{% if u.note %} · {{ u.note }}{% endif %}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+
+{% endblock %}

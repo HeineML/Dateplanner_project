@@ -1,0 +1,51 @@
+{% extends "booking/base.html" %}
+{% block title %}Book en date{% endblock %}
+{% block content %}
+
+<div class="card">
+  <h1>Book en date med Heine 💌</h1>
+  <p class="lead">Velg en dato som funker for deg</p>
+
+  <form method="post">
+    {% csrf_token %}
+    <label for="id_date">Dato</label>
+    <input type="date" name="date" id="id_date" min="{{ today }}" required>
+
+    <label for="id_activity">Aktivitet (valgfritt)</label>
+    <input type="text" name="activity" id="id_activity" placeholder="f.eks. minigolf, pizza...">
+
+    <label for="id_message">Melding (valgfritt)</label>
+    <textarea name="message" id="id_message" rows="2" placeholder="Skriv noe søtt..."></textarea>
+
+    <button type="submit" style="width:100%;">Send forespørsel</button>
+  </form>
+</div>
+
+<div class="card">
+  <h2>Dine forespørsler</h2>
+  {% if my_requests %}
+    {% for r in my_requests %}
+      <div class="item">
+        {{ r.date }}{% if r.activity %} · {{ r.activity }}{% endif %}
+        <span class="badge {{ r.status }}">{{ r.get_status_display }}</span>
+        {% if r.message %}<div style="font-size:14px; color:var(--rose); margin-top:4px;">"{{ r.message }}"</div>{% endif %}
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="empty">Ingen forespørsler ennå.</p>
+  {% endif %}
+</div>
+
+<script>
+  // Blokker datoer Heine har markert som utilgjengelig, direkte i inputen
+  const unavailable = {{ unavailable_dates|safe }};
+  const input = document.getElementById('id_date');
+  input.addEventListener('input', function(){
+    if (unavailable.includes(this.value)) {
+      this.setCustomValidity('Heine er ikke tilgjengelig denne dagen 💔');
+    } else {
+      this.setCustomValidity('');
+    }
+  });
+</script>
+{% endblock %}
