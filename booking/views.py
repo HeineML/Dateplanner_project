@@ -2,6 +2,8 @@ from datetime import date
 
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.staticfiles.storage import staticfiles_storage
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 
@@ -10,6 +12,17 @@ from .models import Unavailability, DateRequest
 
 def is_heine(user):
     return user.username == 'heine'
+
+
+def service_worker(request):
+    """
+    Serverer sw.js fra rot-URL-en (/sw.js) i stedet for /static/...
+    slik at nettleseren tillater scope='/' -- altså at service workeren
+    faktisk får lov til å kontrollere hele appen, ikke bare static-mappen.
+    """
+    with staticfiles_storage.open('booking/sw.js') as f:
+        content = f.read()
+    return HttpResponse(content, content_type='application/javascript')
 
 
 @login_required

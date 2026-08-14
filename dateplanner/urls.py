@@ -22,6 +22,7 @@ from booking import views as booking_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('sw.js', booking_views.service_worker, name='service_worker'),
     path('', booking_views.dashboard, name='dashboard'),
     path('login/', auth_views.LoginView.as_view(template_name='booking/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
